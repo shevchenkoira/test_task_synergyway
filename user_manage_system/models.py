@@ -4,9 +4,32 @@ from django.core.validators import validate_email
 from django.db import models
 
 
+class CustomGroup(models.Model):
+    name = models.CharField(
+        max_length=40,
+        verbose_name="Name",
+        unique=True,
+    )
+    description = models.CharField(
+        verbose_name="Description",
+        max_length=255,
+    )
+
+    def __str__(self):
+        """str: Returns name of Group."""
+        return self.name
+
+    class Meta:
+        """This meta class stores verbose names and ordering data."""
+
+        ordering = ["name"]
+        verbose_name = "CustomGroup"
+        verbose_name_plural = "CustomGroups"
+
+
 class CustomUser(PermissionsMixin, AbstractBaseUser):
     username = models.CharField(
-        max_length=20,
+        max_length=30,
         unique=True,
     )
     email = models.EmailField(
@@ -18,18 +41,15 @@ class CustomUser(PermissionsMixin, AbstractBaseUser):
         auto_now_add=True,
         editable=False,
     )
-    group = models.ManyToManyField(
-        "Group",
-        verbose_name="Group",
-        blank=True,
-        null=True,
+    custom_group = models.ManyToManyField(
+        CustomGroup
     )
 
     is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = "username"
 
-    REQUIRED_FIELDS = ("password", "username", "email")
+    REQUIRED_FIELDS = ("password", "confirm_password", "email")
 
     class Meta:
         """This meta class stores verbose names ordering data."""
@@ -46,31 +66,3 @@ class CustomUser(PermissionsMixin, AbstractBaseUser):
     def __str__(self):
         """str: Returns username of the user."""
         return self.username
-
-
-class Group(models.Model):
-    name = models.CharField(
-        max_length=40,
-        verbose_name="Name",
-    )
-    user = models.ManyToManyField(
-        "CustomUser",
-        verbose_name="User",
-        blank=True,
-        null=True,
-    )
-    description = models.CharField(
-        verbose_name="Description",
-        max_length=255,
-    )
-
-    def __str__(self):
-        """str: Returns name of Group."""
-        return self.name
-
-    class Meta:
-        """This meta class stores verbose names and ordering data."""
-
-        ordering = ["name"]
-        verbose_name = "Group"
-        verbose_name_plural = "Groups"

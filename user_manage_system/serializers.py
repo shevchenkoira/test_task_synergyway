@@ -3,9 +3,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.hashers import make_password
 import logging
 
-from rest_framework.exceptions import ValidationError
-
-from user_manage_system.models import CustomUser, Group
+from user_manage_system.models import CustomUser, CustomGroup
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +39,7 @@ class CustomUserSerializer(PasswordsValidation,
     """Serializer for getting all users and creating a new user."""
 
     url = serializers.HyperlinkedIdentityField(
-        view_name="user_manage_system:user-detail", lookup_field="pk",
+        view_name="customuser-detail",
     )
     password = serializers.CharField(
         write_only=True,
@@ -56,15 +54,15 @@ class CustomUserSerializer(PasswordsValidation,
                "placeholder": "Confirmation Password",
                },
     )
-    group = serializers.HyperlinkedRelatedField(
-        view_name="user_manage_system:user-groups", lookup_field="pk",
+    custom_group = serializers.HyperlinkedRelatedField(
+        view_name="group-detail", queryset=CustomGroup.objects.all(), many=True,
     )
 
     class Meta:
         """Class with a model and model fields for serialization."""
 
         model = CustomUser
-        fields = ("url", "id", "email", "username", "group", "email",
+        fields = ("url", "id", "email", "username", "custom_group", "email",
                   "created_at", "password", "confirm_password")
 
     def create(self, validated_data: dict) -> object:
@@ -84,8 +82,8 @@ class CustomUserSerializer(PasswordsValidation,
 class CustomUserDetailSerializer(PasswordsValidation, serializers.ModelSerializer):
     """Serializer to receive and update a specific user."""
 
-    group = serializers.HyperlinkedRelatedField(
-        view_name="user_manage_system:user-groups", lookup_field="pk",
+    custom_group = serializers.HyperlinkedRelatedField(
+        view_name="group-detail", queryset=CustomGroup.objects.all(), many=True,
     )
     password = serializers.CharField(
         write_only=True,
@@ -107,7 +105,7 @@ class CustomUserDetailSerializer(PasswordsValidation, serializers.ModelSerialize
         """Class with a model and model fields for serialization."""
 
         model = CustomUser
-        fields = ("url", "id", "email", "username", "group", "email",
+        fields = ("url", "id", "email", "username", "custom_group",
                   "created_at", "password", "confirm_password")
 
     def update(self, instance: object, validated_data: dict) -> object:
@@ -126,32 +124,11 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for getting all groups and creating a new one."""
 
     url = serializers.HyperlinkedIdentityField(
-        view_name="api:order-detail", lookup_field="pk",
-    )
-    user = serializers.HyperlinkedRelatedField(
-        view_name="user_manage_system:user-detail", lookup_field="pk",
+        view_name="group-detail", lookup_field="pk",
     )
 
     class Meta:
         """Class with a model and model fields for serialization."""
 
-        model = Group
+        model = CustomGroup
         fields = "__all__"
-
-    def validate(self, attrs):
-        users = attrs.get("user")
-        name = attrs.get("name")
-
-        errors = {}
-
-        if not users.groups.filter(name=name):
-            logger.info(f"Group {name} does not have {users.username} user")
-
-            errors.update(
-                {"group": {"message": f"Group {name} does not have {users.username} user",
-                             "help_text": f"Group {name} has such users {list(users)}"}},
-            )
-
-        if errors:
-            raise ValidationError(errors)
-        return super().validate(attrs)
