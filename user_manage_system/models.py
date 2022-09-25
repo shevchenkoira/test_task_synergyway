@@ -48,7 +48,6 @@ class CustomUser(PermissionsMixin, AbstractBaseUser):
         return self.username
 
 
-
 class Group(models.Model):
     name = models.CharField(
         max_length=40,
