@@ -1,6 +1,8 @@
 import logging
+
+from rest_framework import status
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from user_manage_system.models import CustomUser, CustomGroup
 from user_manage_system.serializers import CustomUserDetailSerializer, GroupSerializer, CustomUserSerializer
@@ -46,3 +48,11 @@ class GroupDetailRUDView(RetrieveUpdateDestroyAPIView):
         logger.info(f"Group {self.kwargs.get('pk')} is active.")
 
         return GroupSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            CustomUser.objects.get(custom_group=kwargs.get("pk"))
+        except Exception:
+            return super().destroy(request, *args, **kwargs)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
