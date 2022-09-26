@@ -72,21 +72,28 @@ class FilteringView(GenericAPIView):
     }
 
     def post(self, request, *args, **kwargs):
-        self.filter_data(request.data)
+        try:
+            self.filter_data(request.data)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(self.queryset, context={'request': request}, many=True)
-        print(serializer.data)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
     def filter_data(self, data):
+        if not isinstance(data.get("table"), str):
+            raise TypeError
         table_name = data.get("table")
         filters = data.get("filter")
 
         query = [f"SELECT * FROM {self.model_dict[table_name]} WHERE"]
         for table_filter in filters:
-            if isinstance(table_filter["filter_input"], str):
-                table_filter["filter_input"] = "'" + table_filter["filter_input"] + "'"
-            query.append(self.function_dict[table_filter["filter_function"]].format(table_filter["field"],
-                                                                                    table_filter["filter_input"]))
+            try:
+                if isinstance(table_filter["filter_input"], str):
+                    table_filter["filter_input"] = "'" + table_filter["filter_input"] + "'"
+                query.append(self.function_dict[table_filter["filter_function"]].format(table_filter["field"],
+                                                                                        table_filter["filter_input"]))
+            except KeyError:
+                raise KeyError
             query.append("AND")
         query[-1] = ";"
 
