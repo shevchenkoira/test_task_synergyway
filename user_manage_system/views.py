@@ -1,6 +1,8 @@
 import logging
 
-from rest_framework import status
+from django.contrib.auth.hashers import make_password
+from django.http import QueryDict
+from rest_framework import status, serializers
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, GenericAPIView, RetrieveAPIView, \
     CreateAPIView
 from rest_framework.response import Response
@@ -16,6 +18,10 @@ class CustomUserListCreateView(ListCreateAPIView):
 
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        return super().post(request, *args, **kwargs)
 
 
 class CustomUserDetailRUDView(RetrieveUpdateDestroyAPIView):
