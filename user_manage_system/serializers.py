@@ -39,7 +39,7 @@ class CustomUserSerializer(PasswordsValidation,
     """Serializer for getting all users and creating a new user."""
 
     url = serializers.HyperlinkedIdentityField(
-        view_name="customuser-detail",
+        view_name="customuser-detail", lookup_field="pk",
     )
     password = serializers.CharField(
         write_only=True,
@@ -120,7 +120,7 @@ class CustomUserDetailSerializer(PasswordsValidation, serializers.ModelSerialize
         return super().update(instance, validated_data)
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class CustomGroupSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for getting all groups and creating a new one."""
 
     url = serializers.HyperlinkedIdentityField(
