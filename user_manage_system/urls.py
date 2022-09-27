@@ -1,7 +1,7 @@
 from django.urls import path
 
 from user_manage_system.views import CustomUserDetailRUDView, CustomUserListCreateView, GroupListCreateView, \
-    GroupDetailRUDView
+    GroupDetailRUDView, FilteringView
 
 urlpatterns = [
     path(
@@ -23,5 +23,10 @@ urlpatterns = [
         "group/<int:pk>/",
         GroupDetailRUDView.as_view(),
         name="group-detail",
+    ),
+    path(
+        "filter/",
+        FilteringView.as_view(),
+        name="filter",
     ),
 ]
