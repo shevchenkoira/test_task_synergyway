@@ -42,7 +42,7 @@ class CustomUser(PermissionsMixin, AbstractBaseUser):
         editable=False,
     )
     custom_group = models.ManyToManyField(
-        CustomGroup
+        CustomGroup, related_name="users", blank=True, null=True, default=[]
     )
 
     is_admin = models.BooleanField(default=False)

@@ -63,7 +63,7 @@ class CustomUserSerializer(PasswordsValidation,
 
         model = CustomUser
         fields = ("url", "id", "email", "username", "custom_group", "email",
-                  "created_at", "password", "confirm_password")
+                  "created_at", "password", "confirm_password", "is_admin")
 
     def create(self, validated_data: dict) -> object:
         confirm_password = validated_data.pop("confirm_password")
@@ -106,10 +106,11 @@ class CustomUserDetailSerializer(PasswordsValidation, serializers.ModelSerialize
 
         model = CustomUser
         fields = ("url", "id", "email", "username", "custom_group",
-                  "created_at", "password", "confirm_password")
+                  "created_at", "password", "confirm_password", "is_admin")
 
     def update(self, instance: object, validated_data: dict) -> object:
         confirm_password = validated_data.get("confirm_password", None)
+
         if confirm_password:
             validated_data["password"] = make_password(confirm_password)
         else:
@@ -127,8 +128,10 @@ class CustomGroupSerializer(serializers.HyperlinkedModelSerializer):
         view_name="group-detail", lookup_field="pk",
     )
 
+    users = CustomUserSerializer(read_only=True, many=True)
+
     class Meta:
         """Class with a model and model fields for serialization."""
 
         model = CustomGroup
-        fields = "__all__"
+        fields = ("id", "name", "description", "users", "url")

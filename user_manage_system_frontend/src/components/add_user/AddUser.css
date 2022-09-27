@@ -1,0 +1,145 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+hr{
+    height: 1px;
+    background: #D9D9D9;
+    width: 100%;
+}
+
+h1{
+    margin: 0 !important;
+}
+
+p{
+    margin: 0 !important;
+}
+textarea{
+    resize: none !important;
+}
+
+.add-user_midline_block{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.add-user_midline_header_block{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.add-user_midline_header{
+    position: relative;
+}
+.add-user_midline_header:before {
+    content: "";
+    display: block;
+    width: 70px;
+    height: 2px;
+    background: #D9D9D9;
+    left: 110%;
+    top: 50%;
+    position: absolute;
+}
+.add-user_midline_header:after {
+    content: "";
+    display: block;
+    width: 70px;
+    height: 2px;
+    background: #D9D9D9;
+    right: 110%;
+    top: 50%;
+    position: absolute;
+}
+.add-user_midline_comment{
+    font-style: italic;
+}
+.add-user_form_section{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.add-user_form_section_wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-user_form_item_input label{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #D9D9D9;
+    border-radius: 5px;
+    color: rgba(0, 0, 0, 0.5);
+    padding: 4px 0 4px 4px;
+}
+
+.add-user_form__input{
+    width: 300px;
+    height: 30px;
+    padding: 7px;
+    color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    background: #D9D9D9;
+    border: none;
+    outline: none;
+}
+.add-user_form__textarea{
+    width: 345px;
+    height: 145px;
+    padding: 7px;
+    color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    background: #D9D9D9;
+    border: none;
+    outline: none;
+}
+
+.add-user_submit_button_block{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 50px 0 50px 0;
+}
+.add-user_form__input__button{
+    width: 200px;
+    height: 60px;
+    border: none;
+    border-radius: 5px;
+    background: #009879;
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+    transition: all ease-in-out 0.3s;
+    z-index: 1;
+}
+.add-user_form__input__button:hover{
+    border: 1px solid #000;
+    color: black;
+    background: none;
+}
+
+.add-user_form_error_message{
+    opacity: 0;
+    visibility: hidden;
+}
+.error_message_shown{
+    opacity: 100%;
+    visibility: visible;
+}
+
+.add-user_validation_error{
+    background: rgba(255, 134, 134, 0.5);
+}
