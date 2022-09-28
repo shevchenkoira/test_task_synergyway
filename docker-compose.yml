@@ -1,0 +1,50 @@
+version: "3.2"
+services:
+  db:
+    restart: always
+    image:  postgres:13-alpine
+    environment:
+      - POSTGRES_DB=test_task_synergyway
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    ports:
+      - "5432:5432"
+    networks:
+      - db-net
+
+  frontend:
+    restart: always
+    command: npm start
+    build:
+      context: ./user_manage_system_frontend/
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    stdin_open: true
+    depends_on:
+      - project
+    networks:
+      - db-net
+
+  project:
+    restart: always
+    command : bash -c "python check_db.py --service-name db --ip db --port 3306 && 
+                      python manage.py migrate &&
+                      python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - ./djangoProject/djangoProject/.env
+    build:
+      context: ./djangoProject/
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    networks:
+      - db-net
+
+networks:
+  db-net:
+    driver: bridge
+  djangoProject:
+    external: true
